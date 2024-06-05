@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Timer, Alarm, and Stopwatch</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .section {
+            margin: 20px;
+        }
+
+        input[type="time"],
+        input[type="number"] {
+            padding: 10px;
+            font-size: 16px;
+            margin: 5px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Timer, Alarm, and Stopwatch</h1>
+
+    <!-- Current Time -->
+    <div class="section">
+        <h2>Current Time</h2>
+        <div id="currentTime"></div>
+    </div>
+
+    <!-- Alarm -->
+    <div class="section">
+        <h2>Set Alarm</h2>
+        <input type="time" id="alarmTime">
+        <button onclick="setAlarm()">Set Alarm</button>
+    </div>
+
+    <!-- Stopwatch -->
+    <div class="section">
+        <h2>Stopwatch</h2>
+        <div id="stopwatch">00:00:00</div>
+        <button onclick="startStopwatch()">Start</button>
+        <button onclick="stopStopwatch()">Stop</button>
+        <button onclick="resetStopwatch()">Reset</button>
+    </div>
+
+    <script>
+        // Current Time
+        function updateCurrentTime() {
+            const now = new Date();
+            document.getElementById('currentTime').innerText = now.toLocaleTimeString();
+        }
+        setInterval(updateCurrentTime, 1000);
+        updateCurrentTime();
+
+        // Alarm
+        let alarmTimeout;
+
+        function setAlarm() {
+            const alarmTime = document.getElementById('alarmTime').value;
+            if (!alarmTime) {
+                alert("Please set a valid time for the alarm.");
+                return;
+            }
+
+            const now = new Date();
+            const alarm = new Date(now.toDateString() + ' ' + alarmTime);
+            if (alarm < now) {
+                alarm.setDate(alarm.getDate() + 1); // Set for next day if time has passed
+            }
+
+            const timeToAlarm = alarm - now;
+            clearTimeout(alarmTimeout);
+            alarmTimeout = setTimeout(() => {
+                alert("Alarm ringing!");
+            }, timeToAlarm);
+
+            alert("Alarm set for " + alarm.toLocaleTimeString());
+        }
+
+        // Stopwatch
+        let stopwatchInterval;
+        let elapsedTime = 0;
+
+        function startStopwatch() {
+            if (stopwatchInterval) return;
+
+            const startTime = Date.now() - elapsedTime;
+            stopwatchInterval = setInterval(() => {
+                elapsedTime = Date.now() - startTime;
+                document.getElementById('stopwatch').innerText = new Date(elapsedTime).toISOString().substr(11, 8);
+            }, 1000);
+        }
+
+        function stopStopwatch() {
+            clearInterval(stopwatchInterval);
+            stopwatchInterval = null;
+        }
+
+        function resetStopwatch() {
+            clearInterval(stopwatchInterval);
+            stopwatchInterval = null;
+            elapsedTime = 0;
+            document.getElementById('stopwatch').innerText = "00:00:00";
+        }
+    </script>
+</body>
+
+</html>
