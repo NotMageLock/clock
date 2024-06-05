@@ -97,8 +97,12 @@
             const startTime = Date.now() - elapsedTime;
             stopwatchInterval = setInterval(() => {
                 elapsedTime = Date.now() - startTime;
-                document.getElementById('stopwatch').innerText = new Date(elapsedTime).toISOString().substr(11, 8);
-            }, 1000);
+                const date = new Date(elapsedTime);
+                const minutes = String(date.getMinutes()).padStart(2, '0');
+                const seconds = String(date.getSeconds()).padStart(2, '0');
+                const milliseconds = String(Math.floor(date.getMilliseconds() / 10)).padStart(2, '0');
+                document.getElementById('stopwatch').innerText = `${minutes}:${seconds}:${milliseconds}`;
+            }, 10);
         }
 
         function stopStopwatch() {
